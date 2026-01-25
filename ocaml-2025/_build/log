@@ -1,0 +1,20 @@
+# dune exec ocaml-2025 -- -day 6
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/mbrown/.cache/dune/db
+# Workspace root: /home/mbrown/repos/advent_of_code/ocaml-2025
+# Auto-detected concurrency: 4
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /home/mbrown/.opam/default/bin/ocamlc.opt -config > /tmp/dune_6962b4_output
+$ (cd _build/default && /home/mbrown/.opam/default/bin/ocamldep.opt -modules -impl days/day06.ml) > _build/default/days/.days.objs/days__Day06.impl.d
+$ (cd _build/default && /home/mbrown/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I days/.days.objs/byte -I days/.days.objs/native -I common/.common.objs/byte -I common/.common.objs/native -cmi-file days/.days.objs/byte/days__Day06.cmi -no-alias-deps -opaque -open Days -o days/.days.objs/native/days__Day06.cmx -c -impl days/day06.ml)
+$ (cd _build/default && /home/mbrown/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -a -o days/days.cmxa days/.days.objs/native/days.cmx days/.days.objs/native/days__Day06.cmx days/.days.objs/native/days__Day05.cmx days/.days.objs/native/days__Day04.cmx days/.days.objs/native/days__Day03.cmx days/.days.objs/native/days__Day02.cmx days/.days.objs/native/days__Day01.cmx)
+$ (cd _build/default && /home/mbrown/.opam/default/bin/ocamlopt.opt -w @1..3@5..28@31..39@43@46..47@49..57@61..62@67@69-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o cmd/main.exe common/common.cmxa days/days.cmxa cmd/.main.eobjs/native/dune__exe__Main.cmx)

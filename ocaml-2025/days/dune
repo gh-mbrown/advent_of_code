@@ -1,0 +1,4 @@
+(library
+ (name days)
+ (libraries common)
+)

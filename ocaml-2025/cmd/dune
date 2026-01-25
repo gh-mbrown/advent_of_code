@@ -1,0 +1,4 @@
+(executable
+ (public_name ocaml-2025)
+ (name main)
+ (libraries days))
