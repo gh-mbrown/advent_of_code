@@ -1,28 +1,52 @@
 let file_name = "input/day06.txt"
 let read_file = lazy (Common.File.read_file_list file_name)
 
-let rec transpose = function
+let transpose lst =
+    match lst with
     | [] -> []
-    | x ->
-        List.filter (fun y -> y <> []) x
-        |> (function
-         | [] -> []
-         | rows -> List.map List.hd rows :: transpose (List.map List.tl rows))
+    | [] :: _ -> []
+    | _ ->
+        let rec aux acc = function
+            | [] :: _ -> List.rev acc
+            | rows ->
+                let hds =
+                    List.filter_map
+                      (function
+                        | [] -> None
+                        | h :: _ -> Some h)
+                      rows
+                in
+                let tls =
+                    List.filter_map
+                      (function
+                        | [] -> None
+                        | _ :: t -> Some t)
+                      rows
+                in
+                aux (hds :: acc) tls
+        in
+        aux [] lst
 ;;
 
-let remove_op op lst =
-    let removed = ref false in
-    let new_lst =
-        List.map
-          (fun x ->
-             if String.contains x op
-             then (
-               removed := true;
-               String.to_seq x |> Seq.filter (fun y -> y <> op) |> String.of_seq)
-             else x)
-          lst
+let split_lst lst =
+    let rec aux lst acc n_lst =
+        match lst with
+        | [] -> n_lst :: acc
+        | x :: xs ->
+            let str_lst = List.init (String.length x) (String.get x) in
+            List.find_opt (fun y -> y = '*' || y = '+') str_lst
+            |> (function
+             | Some ch ->
+                 List.filter (fun y -> y <> ch && y <> ' ') str_lst
+                 |> List.to_seq
+                 |> String.of_seq
+                 |> fun y -> aux xs acc (String.make 1 ch :: y :: n_lst)
+             | None ->
+                 String.trim x
+                 |> fun y ->
+                 if y = "" then aux xs (n_lst :: acc) [] else aux xs acc (y :: n_lst))
     in
-    if !removed then String.make 1 op :: new_lst else new_lst
+    aux lst [] []
 ;;
 
 let format_data_one lst =
@@ -31,29 +55,22 @@ let format_data_one lst =
 ;;
 
 let format_data_two lst =
-    let l =
-        format_data_one lst
-        |> List.map (fun x ->
-          List.map (fun y -> String.to_seq y |> List.of_seq) x
-          |> transpose
-          |> List.map (fun y -> List.to_seq y |> String.of_seq)
-          |> remove_op '+'
-          |> remove_op '*')
-    in
-    List.iter Common.Listext.print_string_list l;
-    l
+    List.map (fun x -> List.init (String.length x) (String.get x)) lst
+    |> transpose
+    |> List.map (fun x -> List.to_seq x |> String.of_seq)
+    |> split_lst
 ;;
 
 let calc op func start lst =
     List.fold_left
       (fun acc x ->
-         List.find_index (fun y -> y = op) x
-         |> function
-         | Some idx ->
-             Common.Listext.remove_at_i idx x
-             |> List.fold_left (fun acc2 z -> func acc2 (int_of_string z)) start
-             |> Int.add acc
-         | None -> acc)
+         List.filter_map (fun y -> if y = op then None else Some y) x
+         |> fun y ->
+         if List.length x <> List.length y
+         then
+           List.fold_left (fun acc2 z -> func acc2 (int_of_string z)) start y
+           |> Int.add acc
+         else acc)
       0
       lst
 ;;
