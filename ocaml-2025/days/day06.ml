@@ -78,3 +78,4 @@ let calc op func start lst =
 let full_calc lst = calc "+" Int.add 0 lst + calc "*" Int.mul 1 lst
 let part_one () = Lazy.force read_file |> format_data_one |> full_calc
 let part_two () = Lazy.force read_file |> format_data_two |> full_calc
+(*test*)
