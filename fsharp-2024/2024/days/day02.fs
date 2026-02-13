@@ -2,7 +2,7 @@ module Day02
 
 open Utils
 
-let private ParseInput () =
+let private parseInput () =
     lazy
         (readlines "inputs/day02.txt"
          |> List.map (fun x ->
@@ -13,49 +13,45 @@ let private ParseInput () =
                  | _ -> failwith "does not match pattern")
              |> List.ofArray))
 
-let rec private IsDescending =
+let rec private isDescending =
     function
     | []
     | [ _ ] -> true
-    | x :: y :: rest -> x > y && IsDescending(y :: rest)
+    | head :: next :: rest -> head > next && isDescending (next :: rest)
 
-let rec private IsAscending =
+let rec private isAscending =
     function
     | []
     | [ _ ] -> true
-    | x :: y :: rest -> x < y && IsAscending(y :: rest)
+    | head :: next :: rest -> head < next && isAscending (next :: rest)
 
-let rec private DifferenceLessThanThree =
+let rec private differenceLessThanThree =
     function
     | []
     | [ _ ] -> true
-    | x :: y :: rest ->
-        let diff = abs (x - y)
-        diff > 0 && diff < 4 && DifferenceLessThanThree(y :: rest)
+    | head :: next :: rest ->
+        let diff = abs (head - next)
+        diff > 0 && diff < 4 && differenceLessThanThree (next :: rest)
 
-let private IsGood =
+let private isGood =
     function
     | [] -> false
-    | lst -> (IsDescending lst || IsAscending lst) && DifferenceLessThanThree lst
+    | lst -> (isDescending lst || isAscending lst) && differenceLessThanThree lst
 
-let private RemoveOneAndTryAgain =
+let private removeOneAndTryAgain =
     function
     | [] -> false
-    | lst ->
-        List.indexed lst
-        |> List.exists (function
-            | i, _ -> List.removeAt i lst |> IsGood)
+    | lst -> List.indexed lst |> List.exists (fun (i, _) -> List.removeAt i lst |> isGood)
 
-let private PartOne () =
-    ParseInput().Force() |> List.filter IsGood |> List.length
+let private partOne () =
+    parseInput().Force() |> List.filter isGood |> List.length
 
-let private PartTwo () =
-    ParseInput().Force()
-    |> List.partition IsGood
-    |> function
-        | passed, failed -> List.length passed + (List.filter RemoveOneAndTryAgain failed |> List.length)
+let private partTwo () =
+    parseInput().Force()
+    |> List.partition isGood
+    |> fun (passed, failed) -> List.length passed + (List.filter removeOneAndTryAgain failed |> List.length)
 
 
-let Solve () =
-    PartOne() |> Printf.printf "Day 2 Part 1: %d\n"
-    PartTwo() |> Printf.printf "Day 2 Part 2: %d\n"
+let solve () =
+    partOne () |> Printf.printf "Day 2 Part 1: %d\n"
+    partTwo () |> Printf.printf "Day 2 Part 2: %d\n"
