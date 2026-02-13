@@ -6,7 +6,7 @@ let (|Int|_|) (str: string) =
     | false, _ -> None
 
 let readlines path =
-    System.IO.File.ReadAllLines path |> Array.toList
+    System.IO.File.ReadAllLines path |> List.ofArray
 
 let multiply a b = a * b
 let add a b = a + b
