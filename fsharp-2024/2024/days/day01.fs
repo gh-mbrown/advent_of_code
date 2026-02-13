@@ -2,7 +2,7 @@ module Day01
 
 open Utils
 
-let private ParseInput () =
+let private parseInput () =
     lazy
         (readlines "inputs/day01.txt"
          |> List.map (fun x ->
@@ -15,16 +15,16 @@ let private ParseInput () =
                  | _ -> failwith "does not match pattern")
          |> List.unzip)
 
-let private PartOne () =
-    ParseInput().Force()
+let private partOne () =
+    parseInput().Force()
     |> fun (left, right) -> List.sort left, List.sort right
     |> fun (left, right) -> List.fold2 (fun acc l r -> acc + abs (l - r)) 0 left right
 
-let private PartTwo () =
-    ParseInput().Force()
+let private partTwo () =
+    parseInput().Force()
     |> fun (left, right) ->
         List.fold (fun acc x -> List.filter (fun y -> y = x) right |> List.length |> multiply x |> add acc) 0 left
 
-let Solve () =
-    PartOne() |> Printf.printf "Day 1 Part 1: %d\n"
-    PartTwo() |> Printf.printf "Day 1 Part 2: %d\n"
+let solve () =
+    partOne () |> Printf.printf "Day 1 Part 1: %d\n"
+    partTwo () |> Printf.printf "Day 1 Part 2: %d\n"

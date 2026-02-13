@@ -5,7 +5,7 @@ let (|Int|_|) (str: string) =
     | true, value -> Some value
     | false, _ -> None
 
-let readlines path =
+let readLines path =
     System.IO.File.ReadAllLines path |> List.ofArray
 
 let multiply a b = a * b

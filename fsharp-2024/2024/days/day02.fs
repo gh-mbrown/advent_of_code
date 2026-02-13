@@ -4,7 +4,7 @@ open Utils
 
 let private parseInput () =
     lazy
-        (readlines "inputs/day02.txt"
+        (readLines "inputs/day02.txt"
          |> List.map (fun x ->
              x.Split " "
              |> Array.filter (fun y -> y <> "")
