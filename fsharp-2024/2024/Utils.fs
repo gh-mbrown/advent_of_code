@@ -5,6 +5,9 @@ let (|Int|_|) (str: string) =
     | true, value -> Some value
     | false, _ -> None
 
+let (|StartsWith|_|) (prefix: string) (str: string) =
+    if str.StartsWith prefix then Some str else None
+
 let readLines path =
     System.IO.File.ReadAllLines path |> List.ofArray
 

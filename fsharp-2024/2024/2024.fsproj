@@ -8,8 +8,10 @@
 
     <ItemGroup>
         <Compile Include="Utils.fs" />
+        <Compile Include="Lexer.fs" />
         <Compile Include="days/day01.fs" />
         <Compile Include="days/day02.fs" />
+        <Compile Include="days/day03.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

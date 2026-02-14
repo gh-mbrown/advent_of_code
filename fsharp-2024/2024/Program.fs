@@ -8,8 +8,9 @@ let private parseArgs =
 
 let runDay =
     function
-    | 1 -> Day01.Solve()
+    | 1 -> Day01.solve ()
     | 2 -> Day02.solve ()
+    | 3 -> Day03.solve ()
     | _ -> failwith "invalid day"
 
 
