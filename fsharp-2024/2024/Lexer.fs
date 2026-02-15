@@ -23,22 +23,20 @@ let tokenize input =
         if pos >= String.length input then
             List.rev tokens
         else
-            input.[pos..]
-            |> function
-                | StartsWith "mul" _ -> aux (pos + 3) (Mul :: tokens)
-                | StartsWith "(" _ -> aux (pos + 1) (LParen :: tokens)
-                | StartsWith ")" _ -> aux (pos + 1) (RParen :: tokens)
-                | StartsWith "," _ -> aux (pos + 1) (Comma :: tokens)
-                | StartsWith "don't" _ -> aux (pos + 5) (Dont :: tokens)
-                | StartsWith "do" _ -> aux (pos + 2) (Do :: tokens)
-                | _ when System.Char.IsDigit input.[pos] ->
-                    getDigit pos input
-                    |> fun x ->
-                        input.[pos .. x - 1]
-                        |> function
-                            | Int y -> aux x (Number y :: tokens)
-                            | y -> failwithf "not a number %s" y
-                | _ -> aux (pos + 1) (Other :: tokens)
+            match input.[pos..] with
+            | StartsWith "mul" _ -> aux (pos + 3) (Mul :: tokens)
+            | StartsWith "(" _ -> aux (pos + 1) (LParen :: tokens)
+            | StartsWith ")" _ -> aux (pos + 1) (RParen :: tokens)
+            | StartsWith "," _ -> aux (pos + 1) (Comma :: tokens)
+            | StartsWith "don't" _ -> aux (pos + 5) (Dont :: tokens)
+            | StartsWith "do" _ -> aux (pos + 2) (Do :: tokens)
+            | _ when System.Char.IsDigit input.[pos] ->
+                getDigit pos input
+                |> fun endPos ->
+                    match input.[pos .. endPos - 1] with
+                    | Int success -> aux endPos (Number success :: tokens)
+                    | failed -> failwithf "not a number %s" failed
+            | _ -> aux (pos + 1) (Other :: tokens)
 
     aux 0 []
 
