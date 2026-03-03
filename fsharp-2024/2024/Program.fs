@@ -4,7 +4,8 @@ let private parseArgs =
     function
     | [||] -> failwith "no args provided"
     | [| Int day |] -> day
-    | _ -> failwith "Usage: dotnet run <day> [part]"
+    | [| _; _ |] -> failwith "Usage: dotnet run <day>"
+    | _ -> failwith "Input passed was not a int"
 
 let runDay =
     function
