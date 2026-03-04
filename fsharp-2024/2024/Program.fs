@@ -12,7 +12,7 @@ let runDay =
     | 1 -> Day01.solve ()
     | 2 -> Day02.solve ()
     | 3 -> Day03.solve ()
-    | 4 -> Day04.solve ()
+    //| 4 -> Day04.solve ()
     | _ -> failwith "invalid day"
 
 

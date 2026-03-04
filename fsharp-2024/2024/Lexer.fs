@@ -12,17 +12,15 @@ type Token =
     | Do
     | Other
 
-let rec private getDigit pos input =
-    if pos < String.length input && System.Char.IsDigit input.[pos] then
-        getDigit (pos + 1) input
-    else
-        pos
+let rec private getDigit input =
+    function
+    | x when x < String.length input && System.Char.IsDigit input.[x] -> getDigit input (x + 1)
+    | x -> x
 
 let tokenize input =
     let rec aux pos tokens =
-        if pos >= String.length input then
-            List.rev tokens
-        else
+        match pos with
+        | x when x < String.length input ->
             match input.[pos..] with
             | StartsWith "mul" _ -> aux (pos + 3) (Mul :: tokens)
             | StartsWith "(" _ -> aux (pos + 1) (LParen :: tokens)
@@ -31,12 +29,13 @@ let tokenize input =
             | StartsWith "don't" _ -> aux (pos + 5) (Dont :: tokens)
             | StartsWith "do" _ -> aux (pos + 2) (Do :: tokens)
             | _ when System.Char.IsDigit input.[pos] ->
-                getDigit pos input
+                getDigit input pos
                 |> fun endPos ->
                     match input.[pos .. endPos - 1] with
                     | Int success -> aux endPos (Number success :: tokens)
                     | failed -> failwithf "not a number %s" failed
             | _ -> aux (pos + 1) (Other :: tokens)
+        | _ -> List.rev tokens
 
     aux 0 []
 
@@ -46,10 +45,9 @@ let parse isPartTwo tokens =
         | Dont :: LParen :: RParen :: rest when isPartTwo -> aux false results rest
         | Do :: LParen :: RParen :: rest when isPartTwo -> aux true results rest
         | Mul :: LParen :: Number x :: Comma :: Number y :: RParen :: rest ->
-            if enabled then
-                aux enabled ((x, y) :: results) rest
-            else
-                aux enabled results rest
+            match enabled with
+            | true -> aux enabled ((x, y) :: results) rest
+            | false -> aux enabled results rest
         | _ :: rest -> aux enabled results rest
         | [] -> results
 
