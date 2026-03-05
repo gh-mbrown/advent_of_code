@@ -6,24 +6,23 @@ let parse_data =
        |> List.map (fun x -> List.init (String.length x) (String.get x)))
 ;;
 
-let find_num len lst =
-    match lst with
-    | [] -> lst
+let find_num len = function
+    | [] -> []
     | x :: xs ->
-        let rec aux next prev =
-            match next with
+        let rec aux prev = function
             | [] -> List.rev prev
-            | y :: ys ->
-                if List.length prev < len
-                then aux ys (y :: prev)
-                else
-                  List.mapi (fun i _ -> y :: Common.Listext.remove_at_i i prev) prev
-                  |> (fun x -> prev :: x)
-                  |> List.sort (fun x1 x2 -> compare (List.rev x2) (List.rev x1))
-                  |> List.hd
-                  |> aux ys
+            | first :: rest ->
+                (match prev with
+                 | p when List.length p < len -> aux (first :: prev) rest
+                 | p ->
+                     aux
+                       (List.mapi (fun i _ -> first :: Common.Listext.remove_at_i i p) p
+                        |> (fun z -> p :: z)
+                        |> List.sort (fun x1 x2 -> compare (List.rev x2) (List.rev x1))
+                        |> List.hd)
+                       p)
         in
-        aux xs [ x ]
+        aux [ x ] xs
 ;;
 
 let calc len =

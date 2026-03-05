@@ -1,9 +1,1 @@
 profile = janestreet
-
-cases-exp-indent=4
-extension-indent=4
-function-indent=4
-let-binding-indent=4
-module-indent=4
-stritem-extension-indent=4
-type-decl-indent=4

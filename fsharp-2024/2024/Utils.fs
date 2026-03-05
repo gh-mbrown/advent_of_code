@@ -5,13 +5,18 @@ let (|Int|_|) (str: string) =
     | true, value -> Some value
     | false, _ -> None
 
-let (|StartsWith|_|) (str: string) =
+let (|Double|_|) (str: string) =
+    match System.Double.TryParse str with
+    | true, value -> Some value
+    | false, _ -> None
+
+let (|StartsWith|_|) (prefix: string) =
     function
-    | (prefix: string) when str.StartsWith prefix -> Some str
+    | (str: string) when str.StartsWith prefix -> Some str
     | _ -> None
 
 let readLines path =
     System.IO.File.ReadAllLines path |> List.ofArray
 
-let multiply a b = a * b
-let add a b = a + b
+let multiply left right = left * right
+let add left right = left + right

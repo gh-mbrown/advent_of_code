@@ -9,52 +9,47 @@ let parse_data =
     lazy (Common.File.read_file_list file_name |> List.map parse_line |> List.concat)
 ;;
 
-let find_repeat func lst =
-    match lst with
+let find_repeat func = function
     | [ start; stop ] ->
-        let rec aux repeat current =
-            if current > stop
-            then repeat
-            else if func (string_of_int current)
-            then aux (current :: repeat) (current + 1)
-            else aux repeat (current + 1)
+        let rec aux repeat = function
+            | current when current > stop -> repeat
+            | current when func (string_of_int current) ->
+                aux (current :: repeat) (current + 1)
+            | current -> aux repeat (current + 1)
         in
         aux [] start
     | _ -> failwith "does not match pattern"
 ;;
 
 let is_repeat_one num =
-    let len = String.length num in
-    if len mod 2 <> 0
-    then false
-    else (
-      let half = len / 2 in
-      let rec aux i =
-          if i >= half
-          then true
-          else if num.[i] <> num.[i + half]
-          then false
-          else aux (i + 1)
-      in
-      aux 0)
+    String.length num
+    |> function
+    | len when len mod 2 <> 0 -> false
+    | len ->
+        let half = len / 2 in
+        let rec aux = function
+            | i when i >= half -> true
+            | i when num.[i] <> num.[i + half] -> false
+            | i -> aux (i + 1)
+        in
+        aux 0
 ;;
 
 let is_repeat_two num =
-    let len = String.length num in
-    let rec aux i =
-        if i > len / 2
-        then false
-        else if len mod i <> 0
-        then aux (i + 1)
-        else (
-          let rec aux_two j =
-              if j >= len
-              then true
-              else if num.[j] <> num.[j mod i]
-              then false
-              else aux_two (j + 1)
-          in
-          if aux_two 0 then true else aux (i + 1))
+    String.length num
+    |> fun len ->
+    let rec aux = function
+        | i when i > len / 2 -> false
+        | i when len mod i <> 0 -> aux (i + 1)
+        | i ->
+            let rec aux_two = function
+                | j when j >= len -> true
+                | j when num.[j] <> num.[j mod i] -> false
+                | j -> aux_two (j + 1)
+            in
+            (match aux_two 0 with
+             | false -> aux (i + 1)
+             | true -> true)
     in
     aux 1
 ;;

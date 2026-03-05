@@ -23,13 +23,7 @@ let private partOne () =
 let private partTwo () =
     parseInput().Force()
     |> fun (left, right) ->
-        List.fold
-            (fun acc x ->
-                List.filter (fun y -> y = x) right
-                |> List.length
-                |> fun z -> z * x |> fun a -> a + acc)
-            0
-            left
+        List.fold (fun acc x -> List.filter (fun y -> y = x) right |> List.length |> multiply x |> add acc) 0 left
 
 let solve () =
     partOne () |> Printf.printf "Day 1 Part 1: %d\n"

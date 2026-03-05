@@ -2,8 +2,7 @@ let file_name = "input/day05.txt"
 
 let parse_data =
     lazy
-      (let rec aux range ids lst =
-           match lst with
+      (let rec aux range ids = function
            | [] -> range, List.concat ids
            | x :: xs ->
                (match x with
@@ -16,16 +15,16 @@ let parse_data =
        |> aux [] [])
 ;;
 
-let rec valid_ids ids lst =
-    match lst with
+let rec valid_ids ids = function
     | [] -> ids
     | (start, stop) :: xs ->
         (match ids with
          | [] -> valid_ids [ start, stop ] xs
          | (start2, stop2) :: ys ->
-             if start <= stop2 + 1
-             then valid_ids ((min start start2, max stop stop2) :: ys) xs
-             else valid_ids ((start, stop) :: ids) xs)
+             (match start with
+              | s when s <= stop2 + 1 ->
+                  valid_ids ((min s start2, max stop stop2) :: ys) xs
+              | s -> valid_ids ((s, stop) :: ids) xs))
 ;;
 
 let part_one () =

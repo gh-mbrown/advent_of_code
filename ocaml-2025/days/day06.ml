@@ -1,11 +1,10 @@
 let file_name = "input/day06.txt"
 let read_file = lazy (Common.File.read_file_list file_name)
 
-let transpose lst =
-    match lst with
+let transpose = function
     | [] -> []
     | [] :: _ -> []
-    | _ ->
+    | lst ->
         let rec aux acc = function
             | [] :: _ -> List.rev acc
             | rows ->
@@ -29,8 +28,7 @@ let transpose lst =
 ;;
 
 let split_lst lst =
-    let rec aux lst acc n_lst =
-        match lst with
+    let rec aux acc n_lst = function
         | [] -> n_lst :: acc
         | x :: xs ->
             let str_lst = List.init (String.length x) (String.get x) in
@@ -40,13 +38,14 @@ let split_lst lst =
                  List.filter (fun y -> y <> ch && y <> ' ') str_lst
                  |> List.to_seq
                  |> String.of_seq
-                 |> fun y -> aux xs acc (String.make 1 ch :: y :: n_lst)
+                 |> fun y -> aux acc (String.make 1 ch :: y :: n_lst) xs
              | None ->
                  String.trim x
-                 |> fun y ->
-                 if y = "" then aux xs (n_lst :: acc) [] else aux xs acc (y :: n_lst))
+                 |> (function
+                  | y when y = "" -> aux (n_lst :: acc) [] xs
+                  | y -> aux acc (y :: n_lst) xs))
     in
-    aux lst [] []
+    aux [] [] lst
 ;;
 
 let format_data_one lst =
@@ -64,13 +63,16 @@ let format_data_two lst =
 let calc op func start lst =
     List.fold_left
       (fun acc x ->
-         List.filter_map (fun y -> if y = op then None else Some y) x
-         |> fun y ->
-         if List.length x <> List.length y
-         then
-           List.fold_left (fun acc2 z -> func acc2 (int_of_string z)) start y
-           |> Int.add acc
-         else acc)
+         List.filter_map
+           (function
+             | y when y = op -> None
+             | y -> Some y)
+           x
+         |> function
+         | y when List.length x <> List.length y ->
+             List.fold_left (fun acc2 z -> func acc2 (int_of_string z)) start y
+             |> Int.add acc
+         | _ -> acc)
       0
       lst
 ;;

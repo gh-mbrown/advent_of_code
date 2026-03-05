@@ -31,10 +31,10 @@ let filt lst =
 ;;
 
 let rec filt_all removed remaining =
-    let filtered = filt remaining in
-    match filtered with
+    filt remaining
+    |> function
     | [] -> removed
-    | _ ->
+    | filtered ->
         let len = List.length filtered in
         let tbl = Hashtbl.create len in
         List.iter (fun pos -> Hashtbl.add tbl pos ()) filtered;
