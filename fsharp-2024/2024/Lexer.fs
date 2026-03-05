@@ -18,26 +18,26 @@ let rec private getDigit input =
     | pos -> pos
 
 let tokenize input =
-    let rec aux pos tokens =
-        match pos with
-        | x when x < String.length input ->
-            match input.[x..] with
-            | StartsWith "mul" _ -> aux (x + 3) (Mul :: tokens)
-            | StartsWith "(" _ -> aux (x + 1) (LParen :: tokens)
-            | StartsWith ")" _ -> aux (x + 1) (RParen :: tokens)
-            | StartsWith "," _ -> aux (x + 1) (Comma :: tokens)
-            | StartsWith "don't" _ -> aux (x + 5) (Dont :: tokens)
-            | StartsWith "do" _ -> aux (x + 2) (Do :: tokens)
-            | _ when System.Char.IsDigit input.[x] ->
-                getDigit input x
+    let rec aux tokens =
+        function
+        | pos when pos < String.length input ->
+            match input.[pos..] with
+            | StartsWith "mul" _ -> aux (Mul :: tokens) (pos + 3)
+            | StartsWith "(" _ -> aux (LParen :: tokens) (pos + 1)
+            | StartsWith ")" _ -> aux (RParen :: tokens) (pos + 1)
+            | StartsWith "," _ -> aux (Comma :: tokens) (pos + 1)
+            | StartsWith "don't" _ -> aux (Dont :: tokens) (pos + 5)
+            | StartsWith "do" _ -> aux (Do :: tokens) (pos + 2)
+            | _ when System.Char.IsDigit input.[pos] ->
+                getDigit input pos
                 |> fun endPos ->
-                    match input.[x .. endPos - 1] with
-                    | Int success -> aux endPos (Number success :: tokens)
+                    match input.[pos .. endPos - 1] with
+                    | Int success -> aux (Number success :: tokens) endPos
                     | failed -> failwithf "not a number %s" failed
-            | _ -> aux (x + 1) (Other :: tokens)
+            | _ -> aux (Other :: tokens) (pos + 1)
         | _ -> List.rev tokens
 
-    aux 0 []
+    aux [] 0
 
 let parse isPartTwo tokens =
     let rec aux enabled results =

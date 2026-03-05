@@ -30,8 +30,8 @@ let rec private differenceLessThanThree =
     | []
     | [ _ ] -> true
     | head :: next :: rest ->
-        let diff = abs (head - next)
-        diff > 0 && diff < 4 && differenceLessThanThree (next :: rest)
+        abs (head - next)
+        |> fun diff -> diff > 0 && diff < 4 && differenceLessThanThree (next :: rest)
 
 let private isGood =
     function
